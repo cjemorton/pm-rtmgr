@@ -1,1 +1,1 @@
-# pm-rtmgr-gen-db
+# pm-rtmgr
