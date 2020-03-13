@@ -27,8 +27,17 @@ Connects to a rTorrent/ruTorrent installation and returns a list of torrents sto
 
     use Rtmgr::Gen::Db;
 
-    my $foo = Rtmgr::Gen::Db->build();
-    ...
+    my $run = Rtmgr::Gen::Db->build('user','password','host','port','endpoint','db-filename');
+    my $display_db = Rtmgr::Gen::Db->display_db('database');
+    ---
+
+    From command line:
+
+    perl -MRtmgr::Gen::Db -e "Rtmgr::Gen::Db::build('user','password','host','port','endpoint','db-filename');"
+    
+    ex. : perl -MRtmgr::Gen::Db -e "Rtmgr::Gen::Db::build('user','password','example.com','443','RPC2','database');"
+
+
 
 =head1 SUBROUTINES/METHODS
 
@@ -37,22 +46,63 @@ Connects to a rTorrent/ruTorrent installation and returns a list of torrents sto
 =cut
 
 sub build {
+	my $s_useage = '::build()';
+	my ($s_user, $s_pw, $s_url, $s_port, $s_endp, $s_file) = @_;
 
-# Run Example: perl gen-db.pl user pass host port endpoint
-my $xmlrpc = XML::RPC->new("https://$ARGV[0]\:$ARGV[1]\@$ARGV[2]\:$ARGV[3]\/$ARGV[4]");
-my $dl_list = $xmlrpc->call( 'download_list' );
-tie (my %hash_name_db, "DB_File", "$ARGV[5].db", O_CREAT|O_RDWR, 0644) ||
-        die ("Cannot create or open hash_name.db");
-foreach my $i (@{ $dl_list}) {
-        my $name = $xmlrpc->call( 'd.get_name',$i );
-        print "$name\n";
-        $hash_name_db{"$i"} = $name;
-}
-foreach (sort keys %hash_name_db) {
-    print "$_ : $hash_name_db{$_}\n";
-}
-untie(%hash_name_db);
+	## Validate input from ARGV
+	if (not defined $s_user) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server user.\n";
+	}
+	if (not defined $s_pw) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server password.\n";
+	}
+	if (not defined $s_url) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server url.\n";
+	}
+	if (not defined $s_port) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server port.\n";
+	}
+	if (not defined $s_endp) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server endpoint.\n";
+	}
+	if (not defined $s_file) {
+		print "$s_useage\n";
+		die "USEAGE: Missing server db-filename.\n";
+	}
+	# Run Example: perl gen-db.pl user pass host port endpoint
+	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
+	my $dl_list = $xmlrpc->call( 'download_list' );
+	tie (my %hash_name_db, "DB_File", "$s_file.db", O_CREAT|O_RDWR, 0644) ||
+	        die ("Cannot create or open hash_name.db");
+	foreach my $i (@{ $dl_list}) {
+	        my $name = $xmlrpc->call( 'd.get_name',$i );
+	        print "$name\n";
+	        $hash_name_db{"$i"} = $name;
+	}
+	foreach (sort keys %hash_name_db) {
+	    print "$_ : $hash_name_db{$_}\n";
+	}
+	untie(%hash_name_db);
 
+}
+
+sub display_db {
+		my $s_useage = '::display_db()';
+		my ($s_file) = @_;
+	if (not defined $s_file) {
+		die "USEAGE: Missing server db-filename.\n";
+	}
+	tie (my %hash_name_db, "DB_File", "$s_file.db", O_CREAT|O_RDWR, 0644) ||
+	        die ("Cannot create or open hash_name.db");
+	foreach (sort keys %hash_name_db) {
+	    print "$_ : $hash_name_db{$_}\n";
+	}
+	untie(%hash_name_db);
 }
 
 =head1 AUTHOR
