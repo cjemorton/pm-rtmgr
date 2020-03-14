@@ -4,6 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 use XML::RPC;
+use Data::Dump qw(dump);
 use DBI;
 
 use Exporter 'import';
@@ -192,11 +193,11 @@ sub get_tracker {
 	while(my @row = $sth->fetchrow_array()) {
 			# Check to see if the NAME value is populated.
 			if($row[3]) {
-				print Dumper{$row[3]};
-				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\tTRACKER: ".\%row[3]."\tNAME: ".$row[4]."\n";
+				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\n\tTRACKER: ".$row[3]."\n\tNAME: ".$row[4]."\n";
 			} else {
 		      	# Get name for specific reccord in the loop.
-		      	my $url = $xmlrpc->call( 't.get_url',"$row[1]" );
+		      	my $url = $xmlrpc->call( 't.url',"$row[1]:t0" );
+		      	#dump($url); # Dump the call for testing purposes.
 		      	# Update reccords.
 				my $stmt = qq(UPDATE SEEDBOX set TRACKER = "$url" where ID=$row[0];);
 				my $rv = $dbh->do($stmt) or die $DBI::errstr;
@@ -204,7 +205,7 @@ sub get_tracker {
 				if( $rv < 0 ) {
 				   print $DBI::errstr;
 				} else {
-				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\tTRACKER: ".\$url."\tNAME: ".$row[4]."\n";
+				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\n\tTRACKER: ".$url."\n\tNAME: ".$row[4]."\n";
 				}	
 			}
 	}
