@@ -51,6 +51,7 @@ sub create_db_table {
 	my $stmt = qq(CREATE TABLE SEEDBOX 
 			(ID INT PRIMARY KEY NOT NULL,
 			HASH	TEXT	NOT NULL,
+			TRACKER	TEXT	NOT NULL,
 			NAME	TEXT	NOT NULL););
 
 	my $rv = $dbh->do($stmt);
@@ -92,8 +93,8 @@ sub get_hash {
 	my $n=0;
 	foreach my $i (@{ $dl_list}){
 		#my $name = $xmlrpc->call( 'd.get_name',$i );
-		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,NAME)
-			VALUES ($n, "$i", ''));
+		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,TRACKER,NAME)
+			VALUES ($n, "$i", '', ''));
 		my $rv = $dbh->do($stmt) or die $DBI::errstr;
 		$n ++;
 		print "INDEX: $n |HASH:\t$i\n";
@@ -128,7 +129,7 @@ sub get_name {
 
 	
 	# Open database and itterate through it.
-	my $stmt = qq(SELECT ID, HASH, NAME from SEEDBOX;);
+	my $stmt = qq(SELECT ID, HASH, TRACKER, NAME from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
 	my $rv = $sth->execute() or die $DBI::errstr;
 
@@ -137,17 +138,12 @@ sub get_name {
 	}
 
 	while(my @row = $sth->fetchrow_array()) {
-#	      print "ID:". $row[0] . "\t";
-#	      print "HASH:". $row[1] ."\t";
-#	      print "NAME:". $row[2] ."\n";
-
 			# Check to see if the NAME value is populated.
-			if($row[2]) {
-				print "ID: ". $row[0] . "\tHASH: ". $row[1] . "\tNAME: ". $row[2] . "\n";
+			if($row[3]) {
+				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tTRACKER: ".$row[2]."\tNAME: ".$row[3]."\n";
 			} else {
 		      	# Get name for specific reccord in the loop.
 		      	my $name = $xmlrpc->call( 'd.get_name',"$row[1]" );
-
 		      	# Update reccords.
 				my $stmt = qq(UPDATE SEEDBOX set NAME = "$name" where ID=$row[0];);
 				my $rv = $dbh->do($stmt) or die $DBI::errstr;
@@ -155,8 +151,8 @@ sub get_name {
 				if( $rv < 0 ) {
 				   print $DBI::errstr;
 				} else {
-				   print "ID: ". $row[0] . "\tHASH: ". $row[1] . "\tNAME: ". $name . "\n";
-				}    
+				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tTRACKER: ".$row[2]."\tNAME: ".$name."\n";
+				}	
 			}
 	}
 	print "Operation done successfully\n";
