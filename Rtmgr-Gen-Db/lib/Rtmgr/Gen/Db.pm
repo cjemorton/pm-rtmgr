@@ -10,7 +10,7 @@ use DBI;
 use Fcntl;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(build display_db dupes);
+our @EXPORT_OK = qw(get_hash create_db_table get_name);
 	
 =head1 NAME
 
@@ -27,29 +27,43 @@ our $VERSION = '0.01';
 
 =head1 SYNOPSIS
 
-Connects to a rTorrent/ruTorrent installation and returns a list of torrents storing them to a database.
-
-    use Rtmgr::Gen::Db;
-
-    my $run = Rtmgr::Gen::Db->build('user','password','host','port','endpoint','db-filename');
-    my $display_db = Rtmgr::Gen::Db->display_db('database');
-    ---
-
-    From command line:
-
-    perl -MRtmgr::Gen::Db -e "Rtmgr::Gen::Db::build('user','password','host','port','endpoint','db-filename');"
-    
-    ex. : perl -MRtmgr::Gen::Db -e "Rtmgr::Gen::Db::build('user','password','example.com','443','RPC2','database');"
-
-
+Connects to a rTorrent/ruTorrent installation.
 
 =head1 SUBROUTINES/METHODS
 
 =head2 get
 
 =cut
+sub create_db_table {
+	my ($s_file) = @_;
 
-sub build {
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$s_file.db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+		print "Opened database successfully\n";
+
+	# Create the database tables.
+	my $stmt = qq(CREATE TABLE SEEDBOX 
+			(ID INT PRIMARY KEY NOT NULL,
+			HASH	TEXT	NOT NULL,
+			NAME	TEXT	NOT NULL););
+
+	my $rv = $dbh->do($stmt);
+	if($rv < 0) {
+	   print $DBI::errstr;
+	} else {
+	   print "Table created successfully\n";
+	}
+	$dbh->disconnect();	
+}
+
+
+sub get_hash {
 	my ($s_user, $s_pw, $s_url, $s_port, $s_endp, $s_file) = @_;
 
 	## Validate input from ARGV
@@ -63,7 +77,7 @@ sub build {
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
 	my $dl_list = $xmlrpc->call( 'download_list' );
 
-	# Open and create a SQLite database.
+	# Open SQLite database.
 	my $driver   = "SQLite"; 
 	my $database = "$s_file.db";
 	my $dsn = "DBI:$driver:dbname=$database";
@@ -73,35 +87,83 @@ sub build {
 
 	print "Opened database successfully\n";
 
-	# Create the database tables.
-	my $stmt = qq(CREATE TABLE SEEDBOX
-	   (ID TEXT PRIMARY KEY  NOT NULL,
-	      HASH     TEXT     NOT NULL,
-	      NAME     TEXT		NOT NULL););
-
-	my $rv = $dbh->do($stmt);
-	if($rv < 0) {
-	   print $DBI::errstr;
-	} else {
-	   print "Table created successfully\n";
-	}
 	
-
 	# Insert into database each hash returned from $dl_list
 	my $n=0;
 	foreach my $i (@{ $dl_list}){
 		#my $name = $xmlrpc->call( 'd.get_name',$i );
-		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH)
-        		       VALUES ($n, "$i"));
+		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,NAME)
+			VALUES ($n, "$i", ''));
 		my $rv = $dbh->do($stmt) or die $DBI::errstr;
 		$n ++;
-		print "INDEX: $n |HASH:\t$i\t|\t$name\n";
+		print "INDEX: $n |HASH:\t$i\n";
 	}
 	# Disconnect from database.
 	$dbh->disconnect();	
 }
 
+sub get_name {
+	my ($s_user, $s_pw, $s_url, $s_port, $s_endp, $s_file) = @_;
 
+	## Validate input from ARGV
+	if (not defined $s_user) { die "USEAGE: Missing server user.\n"; }
+	if (not defined $s_pw) { die "USEAGE: Missing server password.\n"; }
+	if (not defined $s_url) { die "USEAGE: Missing server url.\n"; }
+	if (not defined $s_port) { die "USEAGE: Missing server port.\n"; }
+	if (not defined $s_endp) { die "USEAGE: Missing server endpoint.\n"; }
+	if (not defined $s_file) { die "USEAGE: Missing server db-filename.\n"; }
+	# Run Example: perl gen-db.pl user pass host port endpoint
+	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
+#	my $dl_list = $xmlrpc->call( 'download_list' );
+
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$s_file.db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+	print "Opened database successfully\n";
+
+	
+	# Open database and itterate through it.
+	my $stmt = qq(SELECT ID, HASH, NAME from SEEDBOX;);
+	my $sth = $dbh->prepare( $stmt );
+	my $rv = $sth->execute() or die $DBI::errstr;
+
+	if($rv < 0) {
+	   print $DBI::errstr;
+	}
+
+	while(my @row = $sth->fetchrow_array()) {
+#	      print "ID:". $row[0] . "\t";
+#	      print "HASH:". $row[1] ."\t";
+#	      print "NAME:". $row[2] ."\n";
+
+			# Check to see if the NAME value is populated.
+			if($row[2]) {
+				print "ID: ". $row[0] . "\tHASH: ". $row[1] . "\tNAME: ". $row[2] . "\n";
+			} else {
+		      	# Get name for specific reccord in the loop.
+		      	my $name = $xmlrpc->call( 'd.get_name',"$row[1]" );
+
+		      	# Update reccords.
+				my $stmt = qq(UPDATE SEEDBOX set NAME = "$name" where ID=$row[0];);
+				my $rv = $dbh->do($stmt) or die $DBI::errstr;
+
+				if( $rv < 0 ) {
+				   print $DBI::errstr;
+				} else {
+				   print "ID: ". $row[0] . "\tHASH: ". $row[1] . "\tNAME: ". $name . "\n";
+				}    
+			}
+	}
+	print "Operation done successfully\n";
+
+	# Disconnect from database.
+	$dbh->disconnect();	
+}
 
 =head1 AUTHOR
 
@@ -113,15 +175,11 @@ Please report any bugs or feature requests to C<bug-rtmgr-gen-db at rt.cpan.org>
 the web interface at L<https://rt.cpan.org/NoAuth/ReportBug.html?Queue=Rtmgr-Gen-Db>.  I will be notified, and then you'll
 automatically be notified of progress on your bug as I make changes.
 
-
-
-
 =head1 SUPPORT
 
 You can find documentation for this module with the perldoc command.
 
     perldoc Rtmgr::Gen::Db
-
 
 You can also look for information at:
 
@@ -156,7 +214,6 @@ This software is Copyright (c) 2020 by Clem Morton.
 This is free software, licensed under:
 
   The Artistic License 2.0 (GPL Compatible)
-
 
 =cut
 
