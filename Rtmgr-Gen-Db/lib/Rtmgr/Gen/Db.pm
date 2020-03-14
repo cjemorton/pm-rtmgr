@@ -50,34 +50,15 @@ Connects to a rTorrent/ruTorrent installation and returns a list of torrents sto
 =cut
 
 sub build {
-	my $s_useage = '::build()';
 	my ($s_user, $s_pw, $s_url, $s_port, $s_endp, $s_file) = @_;
 
 	## Validate input from ARGV
-	if (not defined $s_user) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server user.\n";
-	}
-	if (not defined $s_pw) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server password.\n";
-	}
-	if (not defined $s_url) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server url.\n";
-	}
-	if (not defined $s_port) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server port.\n";
-	}
-	if (not defined $s_endp) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server endpoint.\n";
-	}
-	if (not defined $s_file) {
-		print "$s_useage\n";
-		die "USEAGE: Missing server db-filename.\n";
-	}
+	if (not defined $s_user) { die "USEAGE: Missing server user.\n"; }
+	if (not defined $s_pw) { die "USEAGE: Missing server password.\n"; }
+	if (not defined $s_url) { die "USEAGE: Missing server url.\n"; }
+	if (not defined $s_port) { die "USEAGE: Missing server port.\n"; }
+	if (not defined $s_endp) { die "USEAGE: Missing server endpoint.\n"; }
+	if (not defined $s_file) { die "USEAGE: Missing server db-filename.\n"; }
 	# Run Example: perl gen-db.pl user pass host port endpoint
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
 	my $dl_list = $xmlrpc->call( 'download_list' );
@@ -92,6 +73,7 @@ sub build {
 
 	print "Opened database successfully\n";
 
+	# Create the database tables.
 	my $stmt = qq(CREATE TABLE SEEDBOX
 	   (ID TEXT PRIMARY KEY  NOT NULL,
 	      HASH     TEXT     NOT NULL,
@@ -108,73 +90,18 @@ sub build {
 	# Insert into database each hash returned from $dl_list
 	my $n=0;
 	foreach my $i (@{ $dl_list}){
-		my $name = $xmlrpc->call( 'd.get_name',$i );
-		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,NAME)
-        		       VALUES ($n, "$i", "$name"));
+		#my $name = $xmlrpc->call( 'd.get_name',$i );
+		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH)
+        		       VALUES ($n, "$i"));
 		my $rv = $dbh->do($stmt) or die $DBI::errstr;
 		$n ++;
 		print "INDEX: $n |HASH:\t$i\t|\t$name\n";
 	}
-
-
+	# Disconnect from database.
 	$dbh->disconnect();	
-
-
-
-	# Get the torrent name for each hash from $dl_list.
-#	foreach my $i (@{ $dl_list}) {
-#	        my $name = $xmlrpc->call( 'd.get_name',$i );
-#	        print "$name\n";
-#	        $hash_name_db{"$i"} = $name;
-#	}
-#	foreach (sort keys %hash_name_db) {
-#	    print "$_ : $hash_name_db{$_}\n";
-#	}
-	
-
-	# Close file database.
-#	untie(%hash_name_db);
-
 }
 
-sub display_db {
-		my $s_useage = '::display_db()';
-		my ($s_file) = @_;
-	if (not defined $s_file) {
-		die "USEAGE: Missing server db-filename.\n";
-	}
-	tie (my %hash_name_db, "DB_File", "$s_file.db", O_CREAT|O_RDWR, 0644) ||
-	        die ("Cannot create or open hash_name.db");
-	foreach (sort keys %hash_name_db) {
-	    print "$_ : $hash_name_db{$_}\n";
-	}
-	untie(%hash_name_db);
-}
 
-sub dupes {
-		my $s_useage = '::dupes()';
-		my ($s_file) = @_;
-	if (not defined $s_file) {
-		die "USEAGE: Missing server db-filename.\n";
-	}	
-	tie (my %hash_name_db, "DB_File", "$s_file.db", O_CREAT|O_RDWR, 0644) ||
-        die ("Cannot create or open phone.db");
-    # Routine.
-    my %dupes = ();
-	while (my ($hash, $torrent_name) = each %hash_name_db) {
-		push @{$dupes{$torrent_name}}, $hash;
-	}
-	{
-    	local $" = "\n\t";
-    	while (my ($torrent_name, $hash) = each %dupes) {
-     	   print "$torrent_name:\n\t@$hash\n" if @$hash > 1;
-     	   #my %return = "$torrent_name:\n\t@$hash\n" if @$hash > 1;
-     	   #return %return;
-    	}
-	}
-    # End routine
-    untie(%hash_name_db);
-}
 
 =head1 AUTHOR
 
