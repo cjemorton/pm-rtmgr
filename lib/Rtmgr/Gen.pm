@@ -3,6 +3,9 @@ package Rtmgr::Gen;
 use 5.006;
 use strict;
 use warnings;
+use XML::RPC;
+use Data::Dump qw(dump);
+use DBI;
 
 use Rtmgr::Gen::Db qw(get_hash create_db_table get_name get_tracker calc_scene);
 use Exporter 'import';
