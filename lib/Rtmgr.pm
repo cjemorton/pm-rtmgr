@@ -3,9 +3,6 @@ package Rtmgr;
 use 5.006;
 use strict;
 use warnings;
-use XML::RPC;
-use Data::Dump qw(dump);
-use DBI;
 
 use Rtmgr::Gen::Db qw(get_hash create_db_table get_name get_tracker calc_scene);
 use Exporter 'import';
@@ -17,11 +14,11 @@ Rtmgr::Gen - Connect to rTorrent/ruTorrent installation and get a list of torren
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 
 =head1 SYNOPSIS
