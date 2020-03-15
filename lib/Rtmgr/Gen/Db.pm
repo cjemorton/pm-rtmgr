@@ -8,7 +8,7 @@ use Data::Dump qw(dump);
 use DBI;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(get_hash create_db_table get_name get_tracker);
+our @EXPORT_OK = qw(get_hash create_db_table get_name get_tracker calc_scene);
 	
 =head1 NAME
 
@@ -16,18 +16,34 @@ Rtmgr::Gen::Db - Connect to rTorrent/ruTorrent installation and get a list of to
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 
 =head1 SYNOPSIS
 
 Connects to a rTorrent/ruTorrent installation.
 
+This module connects to an installation of rTorrent/ruTorrent and builds a local SQLite database with the content of the seedbox.
+
 =head1 SUBROUTINES/METHODS
+
+use Rtmgr::Gen qw(get_hash create_db_table get_name get_tracker);
+
+my $create_db = create_db_table('database');
+print $create_db;
+
+my $get_hash = get_hash('user','password','host','443','RPC2','database');
+print $get_hash;
+
+my $get_name = get_name('user','password','host','443','RPC2','database');
+print $get_name;
+
+my $get_tracker = get_tracker('user','password','host','443','RPC2','database');
+print $get_tracker;
 
 =head2 get
 
@@ -208,6 +224,61 @@ sub get_tracker {
 				print "ID: ".$row[0]."\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\n\tTRACKER: ".$url."\n\tNAME: ".$row[4]."\n";
 				}	
 			}
+	}
+	print "Operation done successfully\n";
+
+	# Disconnect from database.
+	$dbh->disconnect();	
+}
+
+sub calc_scene {
+	my ($s_usr, $s_pw, $s_file) = @_;
+
+	print "Active Database: $s_file\n";
+
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$s_file.db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+	print "Opened database successfully\n";
+	
+
+# Open database and itterate through it.
+	my $stmt = qq(SELECT ID, HASH, SCENE, TRACKER, NAME from SEEDBOX;);
+	my $sth = $dbh->prepare( $stmt );
+	my $rv = $sth->execute() or die $DBI::errstr;
+
+	if($rv < 0) {
+	   print $DBI::errstr;
+	}
+
+	while(my @row = $sth->fetchrow_array()) {
+			# Check to see if the NAME value is populated.
+			print "\nID: $row[0]  :::\n";
+
+			if($row[2]) {
+				print "\tHASH: ".$row[1]."\tSCENE: ".$row[2]."\n\tTRACKER: ".$row[3]."\n\tNAME: ".$row[4]."\n";
+			} else {
+				print "\tDATABSE: Nothing Found! ... Searching the srrdb...\n";
+				print "\t * * * SEARCHING * * * : $row[4]";
+				my $srrdb_query = qx(srrdb --username=$s_usr --password=$s_pw -s "$row[4]");
+				print "\n\tRESULTS: $srrdb_query\n";
+
+				# Create Database Reccord.
+				my $stmt = qq(UPDATE SEEDBOX set SCENE = "$srrdb_query" where ID=$row[0];);
+				my $rv = $dbh->do($stmt) or die $DBI::errstr;
+				if( $rv < 0 ) { 
+					print $DBI::errstr;
+				} else {
+					print "\tHASH: ".$row[1]."\tSCENE: ".$srrdb_query."\n\tTRACKER: ".$row[3]."\n\tNAME: ".$row[4]."\n";
+				}
+			}
+
+			print "\t---";
 	}
 	print "Operation done successfully\n";
 
