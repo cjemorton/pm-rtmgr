@@ -99,17 +99,53 @@ sub get_hash {
 	my $password = ""; # Not implemented.
 	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
 
+########################################################################################################################
 	print "Opened database successfully\n";
+
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+
+## POTENTIAL LOGIC...
+# For each element in the arrray ( Each element being a 'hash' of a torrent file returned in $dl_list.)
+# Search the database for a matching hash.
+# If a matching hash is found. - DO nothing.
+# If a hash is not found in the database.
+## Get last id in databse.
+# Increment the last id.
+# Insert into the database the new hash.
+
+
 # Insert into database each hash returned from $dl_list
 	my $n=0;
 	foreach my $i (@{ $dl_list}){
-		#my $name = $xmlrpc->call( 'd.get_name',$i );
-		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
-			VALUES ($n, "$i", '', '', ''));
+		
+		# Run a check to see if the hash already exists in database.
+		my $stmt = qq(SELECT HASH FROM SEEDBOX WHERE HASH = "$i";);
 		my $rv = $dbh->do($stmt) or die $DBI::errstr;
+
+
+		if( $rv < 0 ) {
+			print $DBI::errstr;
+		} else {
+			print "RV: \$rv | HASH: $stmt \n";
+			print "INDEX: $n |HASH:\t$i\n";
+		}
+
+
+
+#		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
+#			VALUES ($n, "$i", '', '', ''));
+#		my $rv = $dbh->do($stmt) or die $DBI::errstr;
 		$n ++;
-		print "INDEX: $n |HASH:\t$i\n";
 	}
+
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+
 	# Disconnect from database.
 	$dbh->disconnect();	
 }

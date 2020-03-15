@@ -18,7 +18,7 @@
 #     LICENSE => q[artistic_2]
 #     MIN_PERL_VERSION => q[5.006]
 #     NAME => q[Rtmgr::Gen::Db]
-#     PREREQ_PM => { Test::More=>q[0] }
+#     PREREQ_PM => { DBI=>q[1.643], Data::Dump=>q[1.23], Test::More=>q[0], XML::RPC=>q[1.1] }
 #     TEST_REQUIRES => { Test::More=>q[0] }
 #     VERSION_FROM => q[lib/Rtmgr/Gen/Db.pm]
 #     clean => { FILES=>q[Rtmgr-Gen-Db-*] }
@@ -61,11 +61,11 @@ DIRFILESEP = /
 DFSEP = $(DIRFILESEP)
 NAME = Rtmgr::Gen::Db
 NAME_SYM = Rtmgr_Gen_Db
-VERSION = 0.02
+VERSION = 0.03
 VERSION_MACRO = VERSION
-VERSION_SYM = 0_02
+VERSION_SYM = 0_03
 DEFINE_VERSION = -D$(VERSION_MACRO)=\"$(VERSION)\"
-XS_VERSION = 0.02
+XS_VERSION = 0.03
 XS_VERSION_MACRO = XS_VERSION
 XS_DEFINE_VERSION = -D$(XS_VERSION_MACRO)=\"$(XS_VERSION)\"
 INST_ARCHLIB = blib/arch
@@ -264,7 +264,7 @@ RCS_LABEL = rcs -Nv$(VERSION_SYM): -q
 DIST_CP = best
 DIST_DEFAULT = tardist
 DISTNAME = Rtmgr-Gen-Db
-DISTVNAME = Rtmgr-Gen-Db-0.02
+DISTVNAME = Rtmgr-Gen-Db-0.03
 
 
 # --- MakeMaker macro section:
@@ -515,8 +515,11 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '    - t' >> META_new.yml
 	$(NOECHO) $(ECHO) '    - inc' >> META_new.yml
 	$(NOECHO) $(ECHO) 'requires:' >> META_new.yml
+	$(NOECHO) $(ECHO) '  DBI: '\''1.643'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Data::Dump: '\''1.23'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  XML::RPC: '\''1.1'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  perl: '\''5.006'\''' >> META_new.yml
-	$(NOECHO) $(ECHO) 'version: '\''0.02'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'version: '\''0.03'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'x_serialization_backend: '\''CPAN::Meta::YAML version 0.018'\''' >> META_new.yml
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
@@ -554,6 +557,9 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
 	$(NOECHO) $(ECHO) '      "runtime" : {' >> META_new.json
 	$(NOECHO) $(ECHO) '         "requires" : {' >> META_new.json
+	$(NOECHO) $(ECHO) '            "DBI" : "1.643",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Data::Dump" : "1.23",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "XML::RPC" : "1.1",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "perl" : "5.006"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
 	$(NOECHO) $(ECHO) '      },' >> META_new.json
@@ -564,7 +570,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '      }' >> META_new.json
 	$(NOECHO) $(ECHO) '   },' >> META_new.json
 	$(NOECHO) $(ECHO) '   "release_status" : "stable",' >> META_new.json
-	$(NOECHO) $(ECHO) '   "version" : "0.02",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "version" : "0.03",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "x_serialization_backend" : "JSON::PP version 4.04"' >> META_new.json
 	$(NOECHO) $(ECHO) '}' >> META_new.json
 	-$(NOECHO) $(MV) META_new.json $(DISTVNAME)/META.json
@@ -874,11 +880,14 @@ testdb_static :: static pure_all
 # --- MakeMaker ppd section:
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
-	$(NOECHO) $(ECHO) '<SOFTPKG NAME="Rtmgr-Gen-Db" VERSION="0.02">' > Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '<SOFTPKG NAME="Rtmgr-Gen-Db" VERSION="0.03">' > Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    <ABSTRACT>Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!</ABSTRACT>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Clem Morton &lt;clem@cpan.org&gt;</AUTHOR>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <PERLCORE VERSION="5,006,0,0" />' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBI::" VERSION="1.643" />' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Data::Dump" VERSION="1.23" />' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="XML::RPC" VERSION="1.1" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.28" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    </IMPLEMENTATION>' >> Rtmgr-Gen-Db.ppd
