@@ -8,7 +8,7 @@ use Data::Dump qw(dump);
 use DBI;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(get_hash create_db_table get_name get_tracker calc_scene);
+our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene);
 	
 =head1 NAME
 
@@ -79,7 +79,7 @@ sub create_db_table {
 }
 
 
-sub get_hash {
+sub get_download_list {
 	my ($s_user, $s_pw, $s_url, $s_port, $s_endp, $s_file) = @_;
 ## Validate input from ARGV
 	if (not defined $s_user) { die "USEAGE: Missing server user.\n"; }
