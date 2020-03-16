@@ -8,7 +8,7 @@ use Data::Dump qw(dump);
 use DBI;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene);
+our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing);
 	
 =head1 NAME
 
@@ -90,9 +90,10 @@ sub get_download_list {
 	if (not defined $s_file) { die "USEAGE: Missing server db-filename.\n"; }
 	# Run Example: perl gen-db.pl user pass host port endpoint
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
-	my $dl_list = $xmlrpc->call( 'download_list' );
+	my @dl_list = $xmlrpc->call( 'download_list' );
 
-	return $dl_list;
+
+	return $dl_list[0];
 }
 
 ########################################################################################################################
@@ -137,7 +138,10 @@ sub get_download_list {
 
 
 
-sub _insert_into_database {
+sub insert_into_database_missing {
+
+
+
 
 #		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
 #					VALUES ($n, "$i", '', '', ''));
