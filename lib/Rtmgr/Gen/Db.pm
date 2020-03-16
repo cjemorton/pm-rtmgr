@@ -91,16 +91,8 @@ sub get_hash {
 	# Run Example: perl gen-db.pl user pass host port endpoint
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
 	my $dl_list = $xmlrpc->call( 'download_list' );
-# Open SQLite database.
-	my $driver   = "SQLite"; 
-	my $database = "$s_file.db";
-	my $dsn = "DBI:$driver:dbname=$database";
-	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
-	my $password = ""; # Not implemented.
-	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
 
-########################################################################################################################
-	print "Opened database successfully\n";
+
 
 ########################################################################################################################
 ########################################################################################################################
@@ -118,22 +110,14 @@ sub get_hash {
 
 
 # Insert into database each hash returned from $dl_list
+	# For each item in the list check the database to see if there is a match.
 	my $n=0;
 	foreach my $i (@{ $dl_list}){
 		
-		# Run a check to see if the hash already exists in database.
-		my $stmt = qq(SELECT HASH FROM SEEDBOX WHERE HASH = "$i";);
-		my $rv = $dbh->do($stmt) or die $DBI::errstr;
+		
+	my $lookup = _lookup_hash($s_file, "$i");
 
-
-		if( $rv < 0 ) {
-			print $DBI::errstr;
-		} else {
-			print "RV: \$rv | HASH: $stmt \n";
-			print "INDEX: $n |HASH:\t$i\n";
-		}
-
-
+	print "QUERY: $lookup \n";
 
 #		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
 #			VALUES ($n, "$i", '', '', ''));
@@ -146,7 +130,45 @@ sub get_hash {
 ########################################################################################################################
 ########################################################################################################################
 
+
+}
+
+sub _lookup_hash {
+	# This sub is passed the filename of a database, and a hash.
+	# If the hash exists in the database it returns the hash.
+	# If the hash does not exist in the database returns a 0.
+	my ($s_file, $hash) = @_;
+
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$s_file.db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+		# Run a check to see if the hash already exists in database.
+		my $stmt = qq(SELECT HASH FROM SEEDBOX WHERE HASH = "$hash";);
+		my $sth = $dbh->prepare( $stmt );
+		my $rv = $sth->execute() or die $DBI::errstr;
+
+		my @row = $sth->fetchrow_array();
+
+		if( $rv < 0 ) {
+			print $DBI::errstr;
+		} else {
+			# Check if the $row[0] returned from the database query has a value or not. 
+			if(exists($row[0]))
+			{
+				return $row[0];
+			}
+			else
+			{
+				return('0');
+			}
+		}
 	# Disconnect from database.
+	$sth->finish();
 	$dbh->disconnect();	
 }
 
