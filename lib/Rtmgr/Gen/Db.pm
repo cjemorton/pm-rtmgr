@@ -3,6 +3,7 @@ package Rtmgr::Gen::Db;
 use 5.006;
 use strict;
 use warnings;
+use diagnostics;
 use XML::RPC;
 use Data::Dump qw(dump);
 use DBI;
@@ -63,7 +64,7 @@ sub create_db_table {
 
 # Create the database tables.
 	my $stmt = qq(CREATE TABLE SEEDBOX
-			(ID INT PRIMARY KEY NOT NULL,
+			(ID TEXT PRIMARY KEY NOT NULL,
 			HASH	TEXT	NOT NULL,
 			SCENE	TEXT	NOT NULL,
 			TRACKER	TEXT	NOT NULL,
@@ -90,10 +91,11 @@ sub get_download_list {
 	if (not defined $s_file) { die "USEAGE: Missing server db-filename.\n"; }
 	# Run Example: perl gen-db.pl user pass host port endpoint
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
-	my @dl_list = $xmlrpc->call( 'download_list' );
+#	my $dl_list = $xmlrpc->call( 'download_list' );
 
+	return $xmlrpc->call( 'download_list' );
 
-	return $dl_list[0];
+#	return $dl_list;
 }
 
 ########################################################################################################################
@@ -139,14 +141,78 @@ sub get_download_list {
 
 
 sub insert_into_database_missing {
+#	dump(@{ $_[0] });
+#	dump($_[1]);
 
+	foreach my $i (@{ $_[0] }){
+#		print "$i\n";
 
+		my $hash_search = _lookup_hash($_[1],$i);
+		if ($hash_search == '0') {
+			print "HASH: NOT IN DATABSE ... Adding ...\n";
+			#############################################
+			# Open SQLite database.
+			my $driver   = "SQLite";
+			my $database = "$_[1].db";
+			my $dsn = "DBI:$driver:dbname=$database";
+			my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+			my $password = ""; # Not implemented.
+			my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+			# Get id for entry into database.
 
-
-#		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
-#					VALUES ($n, "$i", '', '', ''));
-#		my $rv = $dbh->do($stmt) or die $DBI::errstr;
+			#********************************************#
+			# Insert the value into the database.
+				my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
+							VALUES ('$i', "$i", '', '', ''));
+				my $rv = $dbh->do($stmt) or die $DBI::errstr;
+			#********************************************#
+			$dbh->disconnect();
+			#############################################
+			} else {
+				print "HASH: $i \n";
+		}
+	}
 }
+#	print "SEARCH: $hash_search | SERVER: $i\n";
+
+	#{
+	#	
+		# Insert into database missing hash.
+
+			
+#			 
+#			
+#			
+#			
+
+#			print "Opened database successfully\n";
+
+
+
+	
+
+	#} else {
+	#	
+	#}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 sub _lookup_hash {
 	# This sub is passed the filename of a database, and a hash.
@@ -175,7 +241,6 @@ sub _lookup_hash {
 			# Check if the $row[0] returned from the database query has a value or not. 
 			if(exists($row[0]))
 			{
-				return $row[0];
 			}
 			else
 			{
