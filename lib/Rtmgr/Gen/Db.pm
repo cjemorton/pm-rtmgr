@@ -119,11 +119,18 @@ sub get_hash {
 
 	print "QUERY: $lookup \n";
 
-#		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
-#			VALUES ($n, "$i", '', '', ''));
-#		my $rv = $dbh->do($stmt) or die $DBI::errstr;
+
 		$n ++;
 	}
+
+
+
+sub _insert_into_database {
+
+#		my $stmt = qq(INSERT INTO SEEDBOX (ID,HASH,SCENE,TRACKER,NAME)
+#					VALUES ($n, "$i", '', '', ''));
+#		my $rv = $dbh->do($stmt) or die $DBI::errstr;
+}
 
 ########################################################################################################################
 ########################################################################################################################
