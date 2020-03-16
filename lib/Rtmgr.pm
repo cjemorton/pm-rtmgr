@@ -4,7 +4,7 @@ use 5.006;
 use strict;
 use warnings;
 
-use Rtmgr::Gen::Db qw(get_hash create_db_table get_name get_tracker calc_scene);
+use Rtmgr::Gen::Db qw(get_download_list create_db_table get_name get_tracker calc_scene);
 use Exporter 'import';
 our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene);
 	

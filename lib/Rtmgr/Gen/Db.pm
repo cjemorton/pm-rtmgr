@@ -31,13 +31,13 @@ This module connects to an installation of rTorrent/ruTorrent and builds a local
 
 =head1 SUBROUTINES/METHODS
 
-use Rtmgr::Gen qw(get_hash create_db_table get_name get_tracker);
+use Rtmgr::Gen qw(get_download_list create_db_table get_name get_tracker);
 
 my $create_db = create_db_table('database');
 print $create_db;
 
-my $get_hash = get_hash('user','password','host','443','RPC2','database');
-print $get_hash;
+my $get_download_list = get_download_list('user','password','host','443','RPC2','database');
+print $get_download_list;
 
 my $get_name = get_name('user','password','host','443','RPC2','database');
 print $get_name;
