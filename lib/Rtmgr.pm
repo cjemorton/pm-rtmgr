@@ -38,6 +38,48 @@ Connects to a rTorrent/ruTorrent installation.
 
 =head1 SUBROUTINES/METHODS
 
+
+#use Rtmgr qw( run_create_db run_db_pop_id run_extraneous_reccords run_db_pop_torname run_db_pop_tracker run_db_pop_srrdb );
+
+---
+Create a config file called '.config' in the directory you will be running the module from.
+
+--- Content of .config file. ---
+
+SEEDBOX_UN = username
+SEEDBOX_PW = password
+SEEDBOX_HN = host
+SEEDBOX_PR = 443
+SEEDBOX_EP = RPC2
+DATABASE = database
+SRRDB_UN = srrdb_username
+SRRDB_PW = srrdb_password
+
+--- ---
+
+#/usr/bin/env perl
+
+use Rtmgr;
+
+# Create the database.
+Rtmgr->run_create_db();
+
+# Populate the database with torrent hashes.
+Rtmgr->run_db_pop_id();
+
+# Remove Extraneous Reccords from Database.
+Rtmgr->run_extraneous_reccords();
+
+# Populate the database with the names of the torrents.
+Rtmgr->run_db_pop_torname();
+
+# Populate the database with the trackers.
+Rtmgr->run_db_pop_tracker();
+
+# Populate the database with SRRDB Entry if available.
+Rtmgr->run_db_pop_srrdb();
+
+
 =head2 get
 
 =cut
