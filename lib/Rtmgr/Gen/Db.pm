@@ -51,31 +51,37 @@ print $calc_scene;
 sub create_db_table {
 	my ($s_file) = @_;
 
-# Open SQLite database.
-	my $driver   = "SQLite"; 
-	my $database = "$s_file.db";
-	my $dsn = "DBI:$driver:dbname=$database";
-	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
-	my $password = ""; # Not implemented.
-	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
-
-		print "Opened database successfully\n";
-
-# Create the database tables.
-	my $stmt = qq(CREATE TABLE SEEDBOX
-			(ID TEXT PRIMARY KEY NOT NULL,
-			BLANK	TEXT	NOT NULL,
-			SCENE	TEXT	NOT NULL,
-			TRACKER	TEXT	NOT NULL,
-			NAME	TEXT	NOT NULL););
-# Error checking.
-	my $rv = $dbh->do($stmt);
-	if($rv < 0) {
-	   print $DBI::errstr;
+	# Check to see if file exists or not. If not create it.
+	if (-e "$s_file".".db") {
+		print "\nDatabase exists.\n";
 	} else {
-	   print "Table created successfully\n";
+		print "\nCreating Database...\n";
+			# Open SQLite database.
+			my $driver   = "SQLite"; 
+			my $database = "$s_file.db";
+			my $dsn = "DBI:$driver:dbname=$database";
+			my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+			my $password = ""; # Not implemented.
+			my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+				print "Opened database successfully\n";
+
+			# Create the database tables.
+				my $stmt = qq(CREATE TABLE SEEDBOX
+						(ID TEXT PRIMARY KEY NOT NULL,
+						BLANK	TEXT	NOT NULL,
+						SCENE	TEXT	NOT NULL,
+						TRACKER	TEXT	NOT NULL,
+						NAME	TEXT	NOT NULL););
+			# Error checking.
+				my $rv = $dbh->do($stmt);
+				if($rv < 0) {
+				   print $DBI::errstr;
+				} else {
+				   print "Table created successfully\n";
+				}
+				$dbh->disconnect();	
 	}
-	$dbh->disconnect();	
 }
 
 sub get_download_list {
@@ -94,12 +100,7 @@ sub get_download_list {
 }
 
 sub insert_into_database_missing {
-#	dump(@{ $_[0] });
-#	dump($_[1]);
-
 	foreach my $i (@{ $_[0] }){
-#		print "$i\n";
-
 		my $hash_search = _lookup_hash($_[1],$i);
 		if ($hash_search == '0') {
 			print "HASH: NOT IN DATABSE ... Adding ...\n";
@@ -111,16 +112,11 @@ sub insert_into_database_missing {
 			my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
 			my $password = ""; # Not implemented.
 			my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
-			# Get id for entry into database.
-
-			#********************************************#
 			# Insert the value into the database.
 				my $stmt = qq(INSERT INTO SEEDBOX (ID,BLANK,SCENE,TRACKER,NAME)
 							VALUES ('$i', '', '', '', ''));
 				my $rv = $dbh->do($stmt) or die $DBI::errstr;
-			#********************************************#
 			$dbh->disconnect();
-			#############################################
 			} else {
 				print "HASH: $i \n";
 		}
@@ -152,11 +148,8 @@ sub _lookup_hash {
 			print $DBI::errstr;
 		} else {
 			# Check if the $row[0] returned from the database query has a value or not. 
-			if(exists($row[0]))
-			{
-			}
-			else
-			{
+			if(exists($row[0])){
+			} else {
 				return('0');
 			}
 		}
@@ -178,7 +171,6 @@ sub get_name {
 	# Run Example: perl gen-db.pl user pass host port endpoint
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
 
-
 	# Open SQLite database.
 	my $driver   = "SQLite"; 
 	my $database = "$s_file.db";
@@ -189,7 +181,6 @@ sub get_name {
 
 	print "Opened database successfully\n";
 
-	
 	# Open database and itterate through it.
 	my $stmt = qq(SELECT ID, BLANK, SCENE, TRACKER, NAME from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
@@ -245,7 +236,6 @@ sub get_tracker {
 	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
 
 	print "Opened database successfully\n";
-
 	
 # Open database and itterate through it.
 	my $stmt = qq(SELECT ID, BLANK, SCENE, TRACKER, NAME from SEEDBOX;);
@@ -255,7 +245,6 @@ sub get_tracker {
 	if($rv < 0) {
 	   print $DBI::errstr;
 	}
-
 	while(my @row = $sth->fetchrow_array()) {
 			# Check to see if the NAME value is populated.
 			if($row[3]) {
@@ -276,7 +265,6 @@ sub get_tracker {
 			}
 	}
 	print "Operation done successfully\n";
-
 	# Disconnect from database.
 	$dbh->disconnect();	
 }
@@ -296,7 +284,6 @@ sub calc_scene {
 
 	print "Opened database successfully\n";
 	
-
 # Open database and itterate through it.
 	my $stmt = qq(SELECT ID, BLANK, SCENE, TRACKER, NAME from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
