@@ -18,3 +18,6 @@ Revision history for Rtmgr-Gen
 	Removes extraneous reccords from database.
 	Populates database with torrent names.
 	Populates database with trackers.
+0.05
+	Added methods to Rtmgr::Gen to be called from a script.
+	Added ability to use a .config file.
