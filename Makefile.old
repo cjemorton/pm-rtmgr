@@ -494,7 +494,7 @@ realclean purge :: realclean_subdirs
 metafile : create_distdir
 	$(NOECHO) $(ECHO) Generating META.yml
 	$(NOECHO) $(ECHO) '---' > META_new.yml
-	$(NOECHO) $(ECHO) 'abstract: '\''Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) 'abstract: '\''Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'author:' >> META_new.yml
 	$(NOECHO) $(ECHO) '  - '\''Clem Morton <clem@cpan.org>'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'build_requires:' >> META_new.yml
@@ -524,7 +524,7 @@ metafile : create_distdir
 	-$(NOECHO) $(MV) META_new.yml $(DISTVNAME)/META.yml
 	$(NOECHO) $(ECHO) Generating META.json
 	$(NOECHO) $(ECHO) '{' > META_new.json
-	$(NOECHO) $(ECHO) '   "abstract" : "Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!",' >> META_new.json
+	$(NOECHO) $(ECHO) '   "abstract" : "Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.",' >> META_new.json
 	$(NOECHO) $(ECHO) '   "author" : [' >> META_new.json
 	$(NOECHO) $(ECHO) '      "Clem Morton <clem@cpan.org>"' >> META_new.json
 	$(NOECHO) $(ECHO) '   ],' >> META_new.json
@@ -858,7 +858,7 @@ testdb_static :: static pure_all
 # Creates a PPD (Perl Package Description) for a binary distribution.
 ppd :
 	$(NOECHO) $(ECHO) '<SOFTPKG NAME="Rtmgr-Gen-Db" VERSION="0.03">' > Rtmgr-Gen-Db.ppd
-	$(NOECHO) $(ECHO) '    <ABSTRACT>Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!</ABSTRACT>' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '    <ABSTRACT>Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.</ABSTRACT>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    <AUTHOR>Clem Morton &lt;clem@cpan.org&gt;</AUTHOR>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '    <IMPLEMENTATION>' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <PERLCORE VERSION="5,006,0,0" />' >> Rtmgr-Gen-Db.ppd
