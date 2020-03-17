@@ -14,11 +14,11 @@ Rtmgr::Gen - Connect to rTorrent/ruTorrent installation and get a list of torren
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 
 =head1 SYNOPSIS
