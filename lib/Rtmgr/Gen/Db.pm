@@ -13,7 +13,7 @@ our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_
 	
 =head1 NAME
 
-Rtmgr::Gen::Db - Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!
+Rtmgr::Gen::Db - Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.
 
 =head1 VERSION
 
@@ -32,19 +32,36 @@ This module connects to an installation of rTorrent/ruTorrent and builds a local
 
 =head1 SUBROUTINES/METHODS
 
+#!/usr/bin/env perl
+use Data::Dump qw(dump);
+
+use Rtmgr::Gen qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extr$
 # Create Database.
-my $create_db = create_db_table('database');                                                                                                                                print $create_db;                                                                                                                                                           
+my $create_db = create_db_table('database');
+print $create_db;
+
 
 # Populate database with ID's 'HASH' of torrents.
-my $dl_list_arr_ref = get_download_list('user','password','host','443','RPC2','database');                                                    insert_into_database_missing($dl_list_arr_ref,'database');                                                                                                                  
+my $dl_list_arr_ref = get_download_list('user','password','host','443','RPC2','database');
+insert_into_database_missing($dl_list_arr_ref,'database');
+
+# Remove Extraneous Reccords from Database.
+my $dl_list_ext_reccords = get_download_list('user','password','host','443','RPC2','database');
+my $diff_list = get_difference_between_server_and_database($dl_list_ext_reccords,'database');
+add_remove_extraneous_reccords($diff_list,'database');
 
 # Populate database with Torrent Names.
-my $get_name = get_name('user','password','host','443','RPC2','database');                                                                    print $get_name;                                                                                                                                                                                                                                                                                                                                        # Populate database with trackers.
-my $get_tracker = get_tracker('user','password','host','443','RPC2','database');                                                              print $get_tracker;                                                                                                                                                         
+my $get_name = get_name('user','password','host','443','RPC2','database');
+print $get_name;
+
+# Populate database with trackers.
+my $get_tracker = get_tracker('user','password','host','443','RPC2','database');
+print $get_tracker;
 
 # Check if release is a scene release by checking for entry in srrdb.
 my $calc_scene = calc_scene('user','password','database');
 print $calc_scene;
+
 =head2 get
 
 =cut
@@ -104,7 +121,6 @@ sub insert_into_database_missing {
 		my $hash_search = _lookup_hash($_[1],$i);
 		if ($hash_search == '0') {
 			print "HASH: NOT IN DATABSE ... Adding ...\n";
-			#############################################
 			# Open SQLite database.
 			my $driver   = "SQLite";
 			my $database = "$_[1].db";
@@ -127,8 +143,6 @@ sub get_difference_between_server_and_database {
 	# $_[0]; # Reference to download list hash. Dereference with @{ $_[0] }
 	# $_[1]; # Scalar of name of database file.
 
-	#print "@{ $_[0] }";
-
 	# Open SQLite database.
 	my $driver   = "SQLite"; 
 	my $database = "$_[1].db";
@@ -149,7 +163,6 @@ sub get_difference_between_server_and_database {
 	if( $rv < 0 ) {
 		print $DBI::errstr;
 	}
-
 		# Check if there is a difference between the two arrays.
 		my %diff1;
 		my %diff2;
@@ -197,7 +210,6 @@ sub add_remove_extraneous_reccords{
 							my $rv = $dbh->do($stmt) or die $DBI::errstr;							
 						}
 		}
-
 	$dbh->disconnect();	
 }
 
