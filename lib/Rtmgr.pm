@@ -14,7 +14,7 @@ Rtmgr::Gen - Connect to rTorrent/ruTorrent installation and get a list of torren
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 

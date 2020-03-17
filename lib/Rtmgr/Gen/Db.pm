@@ -17,7 +17,7 @@ Rtmgr::Gen::Db - Connect to rTorrent/ruTorrent installation and get a list of to
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
@@ -39,7 +39,6 @@ use Rtmgr::Gen qw(get_download_list create_db_table get_name get_tracker calc_sc
 # Create Database.
 my $create_db = create_db_table('database');
 print $create_db;
-
 
 # Populate database with ID's 'HASH' of torrents.
 my $dl_list_arr_ref = get_download_list('user','password','host','443','RPC2','database');
