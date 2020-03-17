@@ -16,11 +16,6 @@ our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_
 	
 our @EXPORT = qw( run_create_db run_db_pop_id run_extraneous_reccords run_db_pop_torname run_db_pop_tracker run_db_pop_srrdb );
 
-
-my $configuration_file = '.config';
-
-my $cnf = Config::File::read_config_file($configuration_file);
-
 =head1 NAME
 
 Rtmgr::Gen - Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.!

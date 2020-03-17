@@ -13,6 +13,7 @@ use Exporter 'import';
 our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extraneous_reccords);
 
 our @EXPORT = qw( run_create_db run_db_pop_id run_extraneous_reccords run_db_pop_torname run_db_pop_tracker run_db_pop_srrdb );
+
 	
 =head1 NAME
 
@@ -76,6 +77,15 @@ Rtmgr::Gen->run_db_pop_srrdb();
 =head2 get
 
 =cut
+
+# Config file setup.
+my $configuration_file = '.config';
+# Check for existence of config file.
+if (not -e $configuration_file) {
+    print "The '.config' file does not exist!\n";
+    exit;
+}
+my $cnf = Config::File::read_config_file($configuration_file);
 
 sub run_print_config {
 print "$cnf->{DATABASE}\n"; # Database
