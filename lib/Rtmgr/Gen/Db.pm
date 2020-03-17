@@ -9,7 +9,7 @@ use Data::Dump qw(dump);
 use DBI;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing);
+our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extraneous_reccords);
 	
 =head1 NAME
 
@@ -121,6 +121,84 @@ sub insert_into_database_missing {
 				print "HASH: $i \n";
 		}
 	}
+}
+
+sub get_difference_between_server_and_database {
+	# $_[0]; # Reference to download list hash. Dereference with @{ $_[0] }
+	# $_[1]; # Scalar of name of database file.
+
+	#print "@{ $_[0] }";
+
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$_[1].db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+	my $stmt = qq(SELECT ID from SEEDBOX;);
+	my $sth = $dbh->prepare( $stmt );
+	my $rv = $sth->execute() or die $DBI::errstr;
+	
+	my @disk_array;
+	# Go through every item in database in while loop.
+	while(my @row = $sth->fetchrow_array()){
+		push(@disk_array, $row[0])
+	}
+	if( $rv < 0 ) {
+		print $DBI::errstr;
+	}
+
+		# Check if there is a difference between the two arrays.
+		my %diff1;
+		my %diff2;
+
+		@diff1{ @disk_array } = @disk_array;
+		delete @diff1{ @{ $_[0] } };
+		# %diff1 contains elements from '@disk_array' that are not in '@{ $_[0] }'
+
+		@diff2{ @{ $_[0] } } = @{ $_[0] };
+		delete @diff2{ @disk_array };
+		# %diff2 contains elements from '@{ $_[0] }' that are not in '@disk_array'
+
+		my @k = (keys %diff1, keys %diff2);
+
+		return(\@k);
+
+$dbh->disconnect();
+}
+
+sub add_remove_extraneous_reccords{
+	# Open SQLite database.
+	my $driver   = "SQLite"; 
+	my $database = "$_[1].db";
+	my $dsn = "DBI:$driver:dbname=$database";
+	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
+	my $password = ""; # Not implemented.
+	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
+
+
+	print "\nExtraneous Database Reccords: \n";
+		# $_[0] is an array reference to either add or delete from database.
+		foreach my $i (@{ $_[0] }){
+			print "Key: $i\n";
+
+				my $hash_search = _lookup_hash($_[1],$i);
+					if ($hash_search == '0') {
+							print "HASH: $i \n\t NOT IN DATABSE ... Adding ...\n";
+							my $stmt = qq(INSERT INTO SEEDBOX (ID,BLANK,SCENE,TRACKER,NAME)
+										VALUES ('$i', '', '', '', ''));
+							my $rv = $dbh->do($stmt) or die $DBI::errstr;
+						} else {
+							print "Key: $i | Does not belong in database.\n";
+							# Delete Operation.
+							my $stmt = qq(DELETE from SEEDBOX where ID = $i;);
+							my $rv = $dbh->do($stmt) or die $DBI::errstr;							
+						}
+		}
+
+	$dbh->disconnect();	
 }
 
 sub _lookup_hash {
