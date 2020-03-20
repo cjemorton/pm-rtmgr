@@ -10,7 +10,7 @@ use DBI;
 
 use Exporter 'import';
 our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extraneous_reccords);
-	
+
 =head1 NAME
 
 Rtmgr::Gen::Db - Connect to rTorrent/ruTorrent installation and get a list of torrents, storing them to a database.
@@ -29,6 +29,8 @@ our $VERSION = '0.05';
 Connects to a rTorrent/ruTorrent installation.
 
 This module connects to an installation of rTorrent/ruTorrent and builds a local SQLite database with the content of the seedbox.
+
+# TODO: Write documentation for each function.
 
 =head1 SUBROUTINES/METHODS
 
@@ -73,7 +75,7 @@ sub create_db_table {
 	} else {
 		print "\nCreating Database...\n";
 			# Open SQLite database.
-			my $driver   = "SQLite"; 
+			my $driver   = "SQLite";
 			my $database = "$s_file.db";
 			my $dsn = "DBI:$driver:dbname=$database";
 			my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -96,7 +98,7 @@ sub create_db_table {
 				} else {
 				   print "Table created successfully\n";
 				}
-				$dbh->disconnect();	
+				$dbh->disconnect();
 	}
 }
 
@@ -143,7 +145,7 @@ sub get_difference_between_server_and_database {
 	# $_[1]; # Scalar of name of database file.
 
 	# Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$_[1].db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -153,7 +155,7 @@ sub get_difference_between_server_and_database {
 	my $stmt = qq(SELECT ID from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
 	my $rv = $sth->execute() or die $DBI::errstr;
-	
+
 	my @disk_array;
 	# Go through every item in database in while loop.
 	while(my @row = $sth->fetchrow_array()){
@@ -183,7 +185,7 @@ $dbh->disconnect();
 
 sub add_remove_extraneous_reccords{
 	# Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$_[1].db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -206,10 +208,10 @@ sub add_remove_extraneous_reccords{
 							print "Key: $i | Does not belong in database.\n";
 							# Delete Operation.
 							my $stmt = qq(DELETE from SEEDBOX where ID = $i;);
-							my $rv = $dbh->do($stmt) or die $DBI::errstr;							
+							my $rv = $dbh->do($stmt) or die $DBI::errstr;
 						}
 		}
-	$dbh->disconnect();	
+	$dbh->disconnect();
 }
 
 sub _lookup_hash {
@@ -219,7 +221,7 @@ sub _lookup_hash {
 	my ($s_file, $hash) = @_;
 
 	# Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$s_file.db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -236,7 +238,7 @@ sub _lookup_hash {
 		if( $rv < 0 ) {
 			print $DBI::errstr;
 		} else {
-			# Check if the $row[0] returned from the database query has a value or not. 
+			# Check if the $row[0] returned from the database query has a value or not.
 			if(exists($row[0])){
 			} else {
 				return('0');
@@ -244,7 +246,7 @@ sub _lookup_hash {
 		}
 	# Disconnect from database.
 	$sth->finish();
-	$dbh->disconnect();	
+	$dbh->disconnect();
 }
 
 sub get_name {
@@ -261,7 +263,7 @@ sub get_name {
 	my $xmlrpc = XML::RPC->new("https://$s_user\:$s_pw\@$s_url\:$s_port\/$s_endp");
 
 	# Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$s_file.db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -290,7 +292,7 @@ sub get_name {
 					my $stmt = qq(UPDATE SEEDBOX set NAME = "$name" where ID='$row[0]';);
 					my $rv = $dbh->do($stmt) or die $DBI::errstr;
 
-					if( $rv < 0 ) { 
+					if( $rv < 0 ) {
 						print $DBI::errstr;
 					} else {
 						print "ADDED: $name\n";
@@ -299,7 +301,7 @@ sub get_name {
 	}
 		print "Operation done successfully\n";
 	# Disconnect from database.
-	$dbh->disconnect();	
+	$dbh->disconnect();
 }
 
 sub get_tracker {
@@ -317,7 +319,7 @@ sub get_tracker {
 #	my $dl_list = $xmlrpc->call( 'download_list' );
 
 # Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$s_file.db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -325,7 +327,7 @@ sub get_tracker {
 	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
 
 	print "Opened database successfully\n";
-	
+
 # Open database and itterate through it.
 	my $stmt = qq(SELECT ID, BLANK, SCENE, TRACKER, NAME from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
@@ -350,12 +352,12 @@ sub get_tracker {
 				   print $DBI::errstr;
 				} else {
 				print "HASH: ".$row[0]."\tBLANK: ".$row[1]."\tSCENE: ".$row[2]."\n\tTRACKER: ".$url."\n\tNAME: ".$row[4]."\n";
-				}	
+				}
 			}
 	}
 	print "Operation done successfully\n";
 	# Disconnect from database.
-	$dbh->disconnect();	
+	$dbh->disconnect();
 }
 
 sub calc_scene {
@@ -364,7 +366,7 @@ sub calc_scene {
 	print "Active Database: $s_file\n";
 
 	# Open SQLite database.
-	my $driver   = "SQLite"; 
+	my $driver   = "SQLite";
 	my $database = "$s_file.db";
 	my $dsn = "DBI:$driver:dbname=$database";
 	my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
@@ -372,7 +374,7 @@ sub calc_scene {
 	my $dbh = DBI->connect($dsn, $userid, $password, { RaiseError => 1 }) or die $DBI::errstr;
 
 	print "Opened database successfully\n";
-	
+
 # Open database and itterate through it.
 	my $stmt = qq(SELECT ID, BLANK, SCENE, TRACKER, NAME from SEEDBOX;);
 	my $sth = $dbh->prepare( $stmt );
@@ -397,7 +399,7 @@ sub calc_scene {
 				# Create Database Reccord.
 				my $stmt = qq(UPDATE SEEDBOX set SCENE = "$srrdb_query" where ID='$row[0]';);
 				my $rv = $dbh->do($stmt) or die $DBI::errstr;
-				if( $rv < 0 ) { 
+				if( $rv < 0 ) {
 					print $DBI::errstr;
 				} else {
 					print "\tsrrDB: $srrdb_query\n";
@@ -411,7 +413,7 @@ sub calc_scene {
 	print "\nOperation done successfully\n";
 
 	# Disconnect from database.
-	$dbh->disconnect();	
+	$dbh->disconnect();
 }
 
 =head1 AUTHOR
