@@ -2,6 +2,7 @@
 ![CI](https://github.com/clem16/pm-rtmgr/workflows/CI/badge.svg?branch=master)
 ![linux](https://github.com/clem16/pm-rtmgr/workflows/linux/badge.svg)
 ![macos](https://github.com/clem16/pm-rtmgr/workflows/macos/badge.svg)
+[![HitCount](http://hits.dwyl.com/clem16/pm-rtmgr.svg)](http://hits.dwyl.com/clem16/pm-rtmgr)
 
 Development repository for Perl modules.
 
