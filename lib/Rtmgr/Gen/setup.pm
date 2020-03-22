@@ -11,6 +11,7 @@ use Exporter qw(import);
 
 our @EXPORT = qw(setup);
 
+
 my %config = (
    'rtorrent_username' => '',
    'rtorrent_password' => '',
@@ -25,12 +26,11 @@ my %config = (
 # NOTE: Basic menu system.
 # TODO: In each sub set the value entered to the corrisponding hash key.
 # TODO: Write the hash to a database.
-# TODO: Figure out how to deal with the catch 22 situation of a database name.
-# The name of the database can not be stored in the database,
-# if the name of the database is needed to call up the database.
-# SOLUTION?: set the database name a shell enviornment variable? export?
 
 sub setup {
+
+
+
   # MENU
   my @list=(
     'Set rtorrent username.', # $list[0] - Menu 1
@@ -44,6 +44,7 @@ sub setup {
     'Print Settings & exit.'); # $list[8] - Menu 9
   my $banner="  Choose an option:";
   my $selection=&pick(\@list,$banner);
+  _set_db_name();
   print "SELECTION = $selection\n";
 
   if ($selection  eq $list[0]){
@@ -146,4 +147,10 @@ sub _print_settings {
   print "$config{'db_name'}\n";
   print "$config{'srrdb_un'}\n";
   print "$config{'srrdb_pw'}\n";
+}
+sub _set_db_name {
+  if ($ENV{'RTMGR_DB_NAME'} eq ''){
+    $ENV{'RTMGR_DB_NAME'} = 'database'
+  }
+  $config{'db_name'} = $ENV{'RTMGR_DB_NAME'};
 }
