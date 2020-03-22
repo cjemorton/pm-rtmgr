@@ -8,13 +8,42 @@ use Config::File;
 
 our @ISA= qw( Exporter );
 
-use Rtmgr::Gen::Db qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extraneous_reccords);
-use Rtmgr::Gen qw( run_create_db run_db_pop_id run_extraneous_reccords run_db_pop_torname run_db_pop_tracker run_db_pop_srrdb );
+use Rtmgr::Gen::Db qw(
+		get_download_list
+		create_db_table
+		get_name
+		get_tracker
+		calc_scene
+		insert_into_database_missing
+		get_difference_between_server_and_database
+		add_remove_extraneous_reccords);
+
+use Rtmgr::Gen qw(
+		run_create_db
+		run_db_pop_id
+		run_extraneous_reccords
+		run_db_pop_torname
+		run_db_pop_tracker
+		run_db_pop_srrdb);
 
 use Exporter 'import';
-our @EXPORT_OK = qw(get_download_list create_db_table get_name get_tracker calc_scene insert_into_database_missing get_difference_between_server_and_database add_remove_extraneous_reccords);
-	
-our @EXPORT = qw( run_create_db run_db_pop_id run_extraneous_reccords run_db_pop_torname run_db_pop_tracker run_db_pop_srrdb );
+our @EXPORT_OK = qw(
+		get_download_list
+		create_db_table
+		get_name
+		get_tracker
+		calc_scene
+		insert_into_database_missing
+		get_difference_between_server_and_database
+		add_remove_extraneous_reccords);
+
+our @EXPORT = qw(
+		run_create_db
+		run_db_pop_id
+		run_extraneous_reccords
+		run_db_pop_torname
+		run_db_pop_tracker
+		run_db_pop_srrdb);
 
 =head1 NAME
 
@@ -22,11 +51,11 @@ Rtmgr::Gen - Connect to rTorrent/ruTorrent installation and get a list of torren
 
 =head1 VERSION
 
-Version 0.05
+Version 0.06
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 
 =head1 SYNOPSIS
