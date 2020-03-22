@@ -192,7 +192,16 @@ PERL_ARCHIVE_AFTER =
 
 TO_INST_PM = lib/Rtmgr.pm \
 	lib/Rtmgr/Gen.pm \
-	lib/Rtmgr/Gen/Db.pm
+	lib/Rtmgr/Gen/Db.pm \
+	lib/Rtmgr/Gen/add_remove_extraneous_reccords.pm \
+	lib/Rtmgr/Gen/calc_scene.pm \
+	lib/Rtmgr/Gen/create_db_table.pm \
+	lib/Rtmgr/Gen/get_difference_between_server_and_database.pm \
+	lib/Rtmgr/Gen/get_download_list.pm \
+	lib/Rtmgr/Gen/get_name.pm \
+	lib/Rtmgr/Gen/get_tracker.pm \
+	lib/Rtmgr/Gen/insert_into_database_missing.pm \
+	lib/Rtmgr/Gen/lookup_hash.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -881,7 +890,16 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  'lib/Rtmgr.pm' 'blib/lib/Rtmgr.pm' \
 	  'lib/Rtmgr/Gen.pm' 'blib/lib/Rtmgr/Gen.pm' \
-	  'lib/Rtmgr/Gen/Db.pm' 'blib/lib/Rtmgr/Gen/Db.pm' 
+	  'lib/Rtmgr/Gen/Db.pm' 'blib/lib/Rtmgr/Gen/Db.pm' \
+	  'lib/Rtmgr/Gen/add_remove_extraneous_reccords.pm' 'blib/lib/Rtmgr/Gen/add_remove_extraneous_reccords.pm' \
+	  'lib/Rtmgr/Gen/calc_scene.pm' 'blib/lib/Rtmgr/Gen/calc_scene.pm' \
+	  'lib/Rtmgr/Gen/create_db_table.pm' 'blib/lib/Rtmgr/Gen/create_db_table.pm' \
+	  'lib/Rtmgr/Gen/get_difference_between_server_and_database.pm' 'blib/lib/Rtmgr/Gen/get_difference_between_server_and_database.pm' \
+	  'lib/Rtmgr/Gen/get_download_list.pm' 'blib/lib/Rtmgr/Gen/get_download_list.pm' \
+	  'lib/Rtmgr/Gen/get_name.pm' 'blib/lib/Rtmgr/Gen/get_name.pm' \
+	  'lib/Rtmgr/Gen/get_tracker.pm' 'blib/lib/Rtmgr/Gen/get_tracker.pm' \
+	  'lib/Rtmgr/Gen/insert_into_database_missing.pm' 'blib/lib/Rtmgr/Gen/insert_into_database_missing.pm' \
+	  'lib/Rtmgr/Gen/lookup_hash.pm' 'blib/lib/Rtmgr/Gen/lookup_hash.pm' 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 
