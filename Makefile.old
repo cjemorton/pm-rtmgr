@@ -18,7 +18,7 @@
 #     LICENSE => q[artistic_2]
 #     MIN_PERL_VERSION => q[5.006]
 #     NAME => q[Rtmgr::Gen::Db]
-#     PREREQ_PM => { Config::File=>q[1.51], DBD::SQLite=>q[1.64], DBI=>q[1.643], Data::Dump=>q[1.23], Test::More=>q[0], XML::RPC=>q[1.1] }
+#     PREREQ_PM => { Config::File=>q[1.51], DBD::SQLite=>q[1.64], DBI=>q[1.643], Data::Dump=>q[1.23], File::Which=>q[1.23], Test::More=>q[0], XML::RPC=>q[1.1] }
 #     TEST_REQUIRES => { Test::More=>q[0] }
 #     VERSION_FROM => q[lib/Rtmgr/Gen/Db.pm]
 #     clean => { FILES=>q[Rtmgr-Gen-Db-*] }
@@ -527,6 +527,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '  DBD::SQLite: '\''1.64'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  DBI: '\''1.643'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Data::Dump: '\''1.23'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  File::Which: '\''1.23'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  XML::RPC: '\''1.1'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  perl: '\''5.006'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version: '\''0.06'\''' >> META_new.yml
@@ -571,6 +572,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '            "DBD::SQLite" : "1.64",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "DBI" : "1.643",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Data::Dump" : "1.23",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "File::Which" : "1.23",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "XML::RPC" : "1.1",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "perl" : "5.006"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
@@ -877,6 +879,7 @@ ppd :
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBD::SQLite" VERSION="1.64" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBI::" VERSION="1.643" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Data::Dump" VERSION="1.23" />' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="File::Which" VERSION="1.23" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="XML::RPC" VERSION="1.1" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.28" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> Rtmgr-Gen-Db.ppd

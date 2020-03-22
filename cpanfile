@@ -5,4 +5,5 @@ on test => sub {
     requires 'Data::Dump';
     requires 'DBI';
     requires 'Config::File';
+    requires 'File::Which';
 };
