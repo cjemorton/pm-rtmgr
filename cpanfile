@@ -6,4 +6,5 @@ on test => sub {
     requires 'DBI';
     requires 'Config::File';
     requires 'File::Which';
+    requires 'Term::Menus';
 };

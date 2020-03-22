@@ -28,7 +28,7 @@ sub create_db_table {
 
 				print "Opened database successfully\n";
 
-			# Create the database tables.
+			# Create the SEEDBOX table.
 				my $stmt = qq(CREATE TABLE SEEDBOX
 						(ID TEXT PRIMARY KEY NOT NULL,
 						BLANK	TEXT	NOT NULL,
@@ -36,15 +36,37 @@ sub create_db_table {
 						TRACKER	TEXT	NOT NULL,
 						NAME	TEXT	NOT NULL););
 
-				#TODO: Hook here to add user to database.
-
 			# Error checking.
 				my $rv = $dbh->do($stmt);
 				if($rv < 0) {
 				   print $DBI::errstr;
 				} else {
-				   print "Table created successfully\n";
+				   print "Table SEEDBOX created successfully\n";
 				}
+
+				# Create CREDENTIALS table
+					my $cred = qq(CREATE TABLE CREDENTIALS
+							(ID TEXT PRIMARY KEY NOT NULL,
+							SEEDBOX_UN	TEXT	NOT NULL,
+							SEEDBOX_PW	TEXT	NOT NULL,
+							SEEDBOX_HN	TEXT	NOT NULL,
+							SEEDBOX_PR	TEXT	NOT NULL,
+							SEEDBOX_EP	TEXT	NOT NULL,
+							DATABASE	TEXT	NOT NULL,
+							SRRDB_UN	TEXT	NOT NULL,
+							SRRDB_PW	TEXT	NOT NULL););
+
+				# Error checking.
+					my $rc = $dbh->do($cred);
+					if($rc < 0) {
+					   print $DBI::errstr;
+					} else {
+					   print "Table CREDENTIALS created successfully\n";
+					}
+
+
+
+
 				$dbh->disconnect();
 	}
 }

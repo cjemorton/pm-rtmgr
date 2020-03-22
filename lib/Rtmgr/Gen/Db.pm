@@ -13,6 +13,7 @@ use Rtmgr::Gen::get_tracker;
 use Rtmgr::Gen::calc_scene;
 use Rtmgr::Gen::get_name;
 use Rtmgr::Gen::create_db_table;
+use Rtmgr::Gen::setup;
 
 use Exporter qw(import);
 our @EXPORT = qw(
@@ -23,7 +24,8 @@ our @EXPORT = qw(
 	calc_scene
 	insert_into_database_missing
 	get_difference_between_server_and_database
-	add_remove_extraneous_reccords);
+	add_remove_extraneous_reccords
+	setup);
 
 =head1 NAME
 

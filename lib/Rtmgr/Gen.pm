@@ -16,7 +16,8 @@ use Rtmgr::Gen::Db qw(
     calc_scene
     insert_into_database_missing
     get_difference_between_server_and_database
-    add_remove_extraneous_reccords);
+    add_remove_extraneous_reccords
+    setup);
 
 
 use Exporter 'import';
@@ -35,7 +36,8 @@ our @EXPORT = qw(
     run_extraneous_reccords
     run_db_pop_torname
     run_db_pop_tracker
-    run_db_pop_srrdb);
+    run_db_pop_srrdb
+    run_print_config);
 
 
 =head1 NAME

@@ -18,7 +18,7 @@
 #     LICENSE => q[artistic_2]
 #     MIN_PERL_VERSION => q[5.006]
 #     NAME => q[Rtmgr::Gen::Db]
-#     PREREQ_PM => { Config::File=>q[1.51], DBD::SQLite=>q[1.64], DBI=>q[1.643], Data::Dump=>q[1.23], File::Which=>q[1.23], Test::More=>q[0], XML::RPC=>q[1.1] }
+#     PREREQ_PM => { Config::File=>q[1.51], DBD::SQLite=>q[1.64], DBI=>q[1.643], Data::Dump=>q[1.23], File::Which=>q[1.23], Term::Menus=>q[3.024], Test::More=>q[0], XML::RPC=>q[1.1] }
 #     TEST_REQUIRES => { Test::More=>q[0] }
 #     VERSION_FROM => q[lib/Rtmgr/Gen/Db.pm]
 #     clean => { FILES=>q[Rtmgr-Gen-Db-*] }
@@ -201,7 +201,8 @@ TO_INST_PM = lib/Rtmgr.pm \
 	lib/Rtmgr/Gen/get_name.pm \
 	lib/Rtmgr/Gen/get_tracker.pm \
 	lib/Rtmgr/Gen/insert_into_database_missing.pm \
-	lib/Rtmgr/Gen/lookup_hash.pm
+	lib/Rtmgr/Gen/lookup_hash.pm \
+	lib/Rtmgr/Gen/setup.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -528,6 +529,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '  DBI: '\''1.643'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  Data::Dump: '\''1.23'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  File::Which: '\''1.23'\''' >> META_new.yml
+	$(NOECHO) $(ECHO) '  Term::Menus: '\''3.024'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  XML::RPC: '\''1.1'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) '  perl: '\''5.006'\''' >> META_new.yml
 	$(NOECHO) $(ECHO) 'version: '\''0.06'\''' >> META_new.yml
@@ -573,6 +575,7 @@ metafile : create_distdir
 	$(NOECHO) $(ECHO) '            "DBI" : "1.643",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "Data::Dump" : "1.23",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "File::Which" : "1.23",' >> META_new.json
+	$(NOECHO) $(ECHO) '            "Term::Menus" : "3.024",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "XML::RPC" : "1.1",' >> META_new.json
 	$(NOECHO) $(ECHO) '            "perl" : "5.006"' >> META_new.json
 	$(NOECHO) $(ECHO) '         }' >> META_new.json
@@ -880,6 +883,7 @@ ppd :
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="DBI::" VERSION="1.643" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Data::Dump" VERSION="1.23" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="File::Which" VERSION="1.23" />' >> Rtmgr-Gen-Db.ppd
+	$(NOECHO) $(ECHO) '        <REQUIRE NAME="Term::Menus" VERSION="3.024" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <REQUIRE NAME="XML::RPC" VERSION="1.1" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <ARCHITECTURE NAME="x86_64-linux-gnu-thread-multi-5.28" />' >> Rtmgr-Gen-Db.ppd
 	$(NOECHO) $(ECHO) '        <CODEBASE HREF="" />' >> Rtmgr-Gen-Db.ppd
@@ -902,7 +906,8 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	  'lib/Rtmgr/Gen/get_name.pm' 'blib/lib/Rtmgr/Gen/get_name.pm' \
 	  'lib/Rtmgr/Gen/get_tracker.pm' 'blib/lib/Rtmgr/Gen/get_tracker.pm' \
 	  'lib/Rtmgr/Gen/insert_into_database_missing.pm' 'blib/lib/Rtmgr/Gen/insert_into_database_missing.pm' \
-	  'lib/Rtmgr/Gen/lookup_hash.pm' 'blib/lib/Rtmgr/Gen/lookup_hash.pm' 
+	  'lib/Rtmgr/Gen/lookup_hash.pm' 'blib/lib/Rtmgr/Gen/lookup_hash.pm' \
+	  'lib/Rtmgr/Gen/setup.pm' 'blib/lib/Rtmgr/Gen/setup.pm' 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

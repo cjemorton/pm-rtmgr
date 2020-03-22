@@ -23,6 +23,7 @@ my %WriteMakefileArgs = (
       'DBD::SQLite'     => '1.64',
       'Config::File'		=> '1.51',
       'File::Which'     => '1.23',
+      'Term::Menus'     => '3.024',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean => { FILES => 'Rtmgr-Gen-Db-*' },
