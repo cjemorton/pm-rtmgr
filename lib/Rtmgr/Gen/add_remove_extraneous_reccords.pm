@@ -12,6 +12,9 @@ use Exporter qw(import);
 our @EXPORT = qw(add_remove_extraneous_reccords);
 
 
+# The purpose of this function is to add or remove extraneous reccords from the database.
+# Essentially bringing it up to date with the reccords on the server.
+
 sub add_remove_extraneous_reccords{
 	# Open SQLite database.
 	my $driver   = "SQLite";
@@ -36,7 +39,8 @@ sub add_remove_extraneous_reccords{
 						} else {
 							print "Key: $i | Does not belong in database.\n";
 							# Delete Operation.
-							my $stmt = qq(DELETE from SEEDBOX where ID = $i;);
+							my $stmt = qq(DELETE from SEEDBOX where ID='$i';);
+							#my $stmt = '';
 							my $rv = $dbh->do($stmt) or die $DBI::errstr;
 						}
 		}
