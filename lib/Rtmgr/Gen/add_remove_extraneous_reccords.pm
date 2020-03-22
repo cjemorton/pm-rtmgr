@@ -40,7 +40,6 @@ sub add_remove_extraneous_reccords{
 							print "Key: $i | Does not belong in database.\n";
 							# Delete Operation.
 							my $stmt = qq(DELETE from SEEDBOX where ID='$i';);
-							#my $stmt = '';
 							my $rv = $dbh->do($stmt) or die $DBI::errstr;
 						}
 		}
