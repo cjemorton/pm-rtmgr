@@ -26,7 +26,11 @@ my %config = (
 # NOTE: Basic menu system.
 # TODO: In each sub set the value entered to the corrisponding hash key.
 # TODO: Write the hash to a database.
-
+# NOTE: set up a check in every file that uses a database
+# to check and see if the env variable for the database is set.
+# if it is not set. use default name.
+# then, check to see if the name set be it default or otherwise exists on disk.
+# ``
 sub setup {
 
 
