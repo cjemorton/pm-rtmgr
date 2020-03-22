@@ -18,7 +18,7 @@ my %config = (
    'rtorrent_hostname' => '',
    'rtorrent_port' => '443',
    'rtorrent_endpoint' => 'RPC2',
-   'db_name' => 'database',
+   'db_name' => 'database', # Default setting for database name defined here.
    'srrdb_un' => '',
    'srrdb_pw' => ''
  );
@@ -114,6 +114,8 @@ sub _get_dbname {
   print "Please enter your database name:\t";
   my $i = <STDIN>;
   chomp $i;
+  $ENV{'RTMGR_DB_NAME'} = $i;
+  $config{'db_name'} = $i;
   return $i;
 }
 sub _get_srrdbun {
@@ -149,8 +151,8 @@ sub _print_settings {
   print "$config{'srrdb_pw'}\n";
 }
 sub _set_db_name {
-  if ($ENV{'RTMGR_DB_NAME'} eq ''){
-    $ENV{'RTMGR_DB_NAME'} = 'database'
+  if (!defined $ENV{'RTMGR_DB_NAME'}){
+    $ENV{'RTMGR_DB_NAME'} = $config{'db_name'};
   }
   $config{'db_name'} = $ENV{'RTMGR_DB_NAME'};
 }
