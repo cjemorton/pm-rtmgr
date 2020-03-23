@@ -176,7 +176,8 @@ sub _set_db_name {
 
 sub _write_db {
    print "Writing to database.\n";
-   #if (-e $config{'db_name'}) {
+   if (-e $config{'db_name'}) {
    # NOTE: change this to if does not exist. Negate -e
-   #}
+   ...
+   }
 }
