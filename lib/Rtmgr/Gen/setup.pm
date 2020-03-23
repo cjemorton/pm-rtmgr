@@ -37,47 +37,47 @@ sub setup {
 
   # MENU
   my @list=(
-    'Set rtorrent username.', # $list[0] - Menu 1
-    'Set rtorrent password.', # $list[1] - Menu 2
-    'Set rtorrent hostname.', # $list[2] - Menu 3
-    'Set rtorrent port.', # $list[3] - Menu 4
-    'Set rtorrent endpoint.', # $list[4] - Menu 5
-    'Set database name.', # $list[5] - Menu 6
-    'Set srrdb username.', # $list[6] - Menu 7
-    'Set srrdb password.', # $list[7] - Menu 8
-    'Print Settings & exit.'); # $list[8] - Menu 9
+    'Set rtorrent username.', # Menu 1: $list[0]
+    'Set rtorrent password.', # Menu 2: $list[1]
+    'Set rtorrent hostname.', # Menu 3: $list[2]
+    'Set rtorrent port.', #     Menu 4: $list[3]
+    'Set rtorrent endpoint.', # Menu 5: $list[4]
+    'Set database name.', #     Menu 6: $list[5]
+    'Set srrdb username.', #    Menu 7: $list[6]
+    'Set srrdb password.', #    Menu 8: $list[7]
+    'Print Settings & exit.');# Menu 9: $list[8]
   my $banner="  Choose an option:";
   my $selection=&pick(\@list,$banner);
   _set_db_name();
   print "SELECTION = $selection\n";
 
-  if ($selection  eq $list[0]){
+  if ($selection  eq $list[0]){ # Menu 1: rtorrent username
       _get_name();
       setup();
-  } elsif ($selection eq $list[1]) {
+  } elsif ($selection eq $list[1]) { # Menu 2: rtorrent password
       _get_password();
       setup();
-  } elsif ($selection eq $list[2]) {
+  } elsif ($selection eq $list[2]) { # Menu 3: rtorrent hostname
       _get_hostname();
       setup();
-  } elsif ($selection eq $list[3]) {
+  } elsif ($selection eq $list[3]) { # Menu 4: rtorrent port
       _get_port();
       setup();
-  } elsif ($selection eq $list[4]) {
+  } elsif ($selection eq $list[4]) { # Menu 5: rtorrent endpoint
       _get_endpoint();
       setup();
-  } elsif ($selection eq $list[5]) {
+  } elsif ($selection eq $list[5]) { # Menu 6: database name
       _get_dbname();
       setup();
-  } elsif ($selection eq $list[6]) {
+  } elsif ($selection eq $list[6]) { # Menu 7: srrdb username
       _get_srrdbun();
       setup();
-  } elsif ($selection eq $list[7]) {
+  } elsif ($selection eq $list[7]) { # Menu 8: srrdb password
       _get_srrdbpw();
       setup();
-  } elsif ($selection eq $list[8]) {
+  } elsif ($selection eq $list[8]) { # Menu 9: Print and exit.
       _print_settings();
-  } elsif ($selection eq $list[9]) {
+      _write_db();
     exit();
   }
 }
@@ -156,7 +156,7 @@ sub _print_settings {
   print "/____|\tThis is a setup!\n";
   print "-------------------------\n";
   print "Your settings are:\n";
-  
+
 
   print "$config{'rtorrent_username'}\n";
   print "$config{'rtorrent_password'}\n";
@@ -175,9 +175,11 @@ sub _set_db_name {
 }
 
 sub _write_db {
-   print "Writing to database.\n";
-   if (-e $config{'db_name'}) {
-   # NOTE: change this to if does not exist. Negate -e
-   ...
+   print "Writing to Database.\n";
+   # Check to see if the database exists on disk.
+   if (! -e "$config{'db_name'}".".db") {
+     print "Database: "."$config{'db_name'}".".db does not exist.\n";
+   } elsif (-e "$config{'db_name'}".".db") {
+     print "Database: "."$config{'db_name'}".".db exist, writing config...\n";
    }
 }
