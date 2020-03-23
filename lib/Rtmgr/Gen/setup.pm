@@ -94,24 +94,32 @@ sub _get_password {
   print "Please enter your password:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'rtorrent_password'} = $i;
+  print "$config{'rtorrent_password'}\n";
   return $i;
 }
 sub _get_hostname {
   print "Please enter your hostname:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'rtorrent_hostname'} = $i;
+  print "$config{'rtorrent_hostname'}\n";
   return $i;
 }
 sub _get_port {
   print "Please enter your port:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'rtorrent_port'} = $i;
+  print "$config{'rtorrent_port'}\n";
   return $i;
 }
 sub _get_endpoint {
   print "Please enter your endpoint:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'rtorrent_endpoint'} = $i;
+  print "$config{'rtorrent_endpoint'}\n";
   return $i;
 }
 sub _get_dbname {
@@ -126,12 +134,16 @@ sub _get_srrdbun {
   print "Please enter your srrdb username:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'srrdb_un'} = $i;
+  print "$config{'srrdb_un'}\n";
   return $i;
 }
 sub _get_srrdbpw {
   print "Please enter your srrdb password:\t";
   my $i = <STDIN>;
   chomp $i;
+  $config{'srrdb_pw'} = $i;
+  print "$config{'srrdb_pw'}\n";
   return $i;
 }
 sub _print_settings {
