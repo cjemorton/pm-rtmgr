@@ -202,7 +202,7 @@ TO_INST_PM = lib/Rtmgr.pm \
 	lib/Rtmgr/Gen/get_tracker.pm \
 	lib/Rtmgr/Gen/insert_into_database_missing.pm \
 	lib/Rtmgr/Gen/lookup_hash.pm \
-	lib/Rtmgr/Gen/open_sqldb.pm \
+	lib/Rtmgr/Gen/run_sqldb_query.pm \
 	lib/Rtmgr/Gen/setup.pm
 
 
@@ -908,7 +908,7 @@ pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	  'lib/Rtmgr/Gen/get_tracker.pm' 'blib/lib/Rtmgr/Gen/get_tracker.pm' \
 	  'lib/Rtmgr/Gen/insert_into_database_missing.pm' 'blib/lib/Rtmgr/Gen/insert_into_database_missing.pm' \
 	  'lib/Rtmgr/Gen/lookup_hash.pm' 'blib/lib/Rtmgr/Gen/lookup_hash.pm' \
-	  'lib/Rtmgr/Gen/open_sqldb.pm' 'blib/lib/Rtmgr/Gen/open_sqldb.pm' \
+	  'lib/Rtmgr/Gen/run_sqldb_query.pm' 'blib/lib/Rtmgr/Gen/run_sqldb_query.pm' \
 	  'lib/Rtmgr/Gen/setup.pm' 'blib/lib/Rtmgr/Gen/setup.pm' 
 	$(NOECHO) $(TOUCH) pm_to_blib
 

@@ -17,7 +17,8 @@ use Rtmgr::Gen::Db qw(
     insert_into_database_missing
     get_difference_between_server_and_database
     add_remove_extraneous_reccords
-    setup);
+    setup
+    run_sqldb_query);
 
 
 use Exporter 'import';

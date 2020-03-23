@@ -14,6 +14,7 @@ use Rtmgr::Gen::calc_scene;
 use Rtmgr::Gen::get_name;
 use Rtmgr::Gen::create_db_table;
 use Rtmgr::Gen::setup;
+use Rtmgr::Gen::run_sqldb_query;
 
 use Exporter qw(import);
 our @EXPORT = qw(
@@ -25,7 +26,12 @@ our @EXPORT = qw(
 	insert_into_database_missing
 	get_difference_between_server_and_database
 	add_remove_extraneous_reccords
-	setup);
+	get_tracker
+	calc_scene
+	get_name
+	create_db_table
+	setup
+	run_sqldb_query);
 
 =head1 NAME
 
