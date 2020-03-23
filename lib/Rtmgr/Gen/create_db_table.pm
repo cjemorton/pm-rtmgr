@@ -11,16 +11,12 @@ our @EXPORT = qw(create_db_table);
 
 
 sub create_db_table {
-	my ($s_file) = @_;
 
-	# Check to see if file exists or not. If not create it.
-	if (-e "$s_file".".db") {
-		print "\nDatabase exists.\n";
-	} else {
+	if (! -e "$_[0]".".db") {
 		print "\nCreating Database...\n";
 			# Open SQLite database.
 			my $driver   = "SQLite";
-			my $database = "$s_file.db";
+			my $database = "$_[0].db";
 			my $dsn = "DBI:$driver:dbname=$database";
 			my $userid = ""; # Not implemented no need for database security on local filesystem at this time.
 			my $password = ""; # Not implemented.
@@ -63,9 +59,6 @@ sub create_db_table {
 					} else {
 					   print "Table CREDENTIALS created successfully\n";
 					}
-
-
-
 
 				$dbh->disconnect();
 	}
