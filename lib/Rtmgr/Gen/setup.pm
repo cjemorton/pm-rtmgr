@@ -156,6 +156,7 @@ sub _print_settings {
   print "/____|\tThis is a setup!\n";
   print "-------------------------\n";
   print "Your settings are:\n";
+  
 
   print "$config{'rtorrent_username'}\n";
   print "$config{'rtorrent_password'}\n";
@@ -171,4 +172,11 @@ sub _set_db_name {
     $ENV{'RTMGR_DB_NAME'} = $config{'db_name'};
   }
   $config{'db_name'} = $ENV{'RTMGR_DB_NAME'};
+}
+
+sub _write_db {
+   print "Writing to database.\n";
+   #if (-e $config{'db_name'}) {
+   # NOTE: change this to if does not exist. Negate -e
+   #}
 }
